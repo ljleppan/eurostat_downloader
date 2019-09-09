@@ -69,7 +69,7 @@ class EurostatDownloader(object):
 
     def _get_html(self, url: str) -> BeautifulSoup:
         """
-        Get the contents of a URK as HTML
+        Get the contents of a URL as HTML
         :param url: Url to fetch
         :return: Parsed HTML as a BeautifulSoup object.
         """
