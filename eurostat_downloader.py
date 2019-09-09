@@ -1,10 +1,13 @@
+"""Bulk download utility for the Eurostat dataset."""
+
 import argparse
 from pathlib import Path
-from typing import List
-import requests
 import time
+from typing import List
 import sys
+
 from bs4 import BeautifulSoup
+import requests
 
 DEFAULT_LIST_URL = "https://ec.europa.eu/eurostat/estat-navtree-portlet-prod/BulkDownloadListing?dir=data&sort=1&sort=2&start=all"
 DEFAULT_STAGGER_AMOUNT = 2000
@@ -17,8 +20,8 @@ class EurostatDownloader(object):
         stagger_amount: int = DEFAULT_STAGGER_AMOUNT,
         quiet: bool = False,
     ) -> None:
-        """
-        Instantiate a new EurostatDownloader for downloading data from list_url.
+        """Instantiate a new EurostatDownloader for downloading data from list_url.
+
         :param list_url: URL providing the listing of available datasets
         :param stagger_amount: Minimum amount of milliseconds between two subsequent HTTP requests
         """
@@ -28,8 +31,8 @@ class EurostatDownloader(object):
         self.last_stagger_finished = 0
 
     def _print(self, text) -> None:
-        """
-        Print to STDOUT unless the quiet flag was passed to the constructor.
+        """Print to STDOUT unless the quiet flag was passed to the constructor.
+
         :param text: Text to (maybe) print
         """
         if not self.quiet:
@@ -49,8 +52,8 @@ class EurostatDownloader(object):
         self.last_stagger_finished = self._current_time()
 
     def _download_file(self, url: str, path: Path) -> bool:
-        """
-        Download file to disk.
+        """Download file to disk.
+
         :param url: Url of path on remote server
         :param path: Local path to which file is stored
         """
@@ -68,8 +71,8 @@ class EurostatDownloader(object):
         return True
 
     def _get_html(self, url: str) -> BeautifulSoup:
-        """
-        Get the contents of a URL as HTML
+        """Get the contents of a URL as HTML.
+
         :param url: Url to fetch
         :return: Parsed HTML as a BeautifulSoup object.
         """
@@ -78,8 +81,8 @@ class EurostatDownloader(object):
         return BeautifulSoup(response.text, "html.parser")
 
     def _crawl_dataset_urls(self, listing_url: str) -> List[str]:
-        """
-        Parse a list of datasets from listing_url.
+        """Parse a list of datasets from listing_url.
+
         :param listing_url: Url to Bulk Download Listing
         :return: List of URL to individual datasets
         """
@@ -88,8 +91,8 @@ class EurostatDownloader(object):
         return [a["href"] for a in html.findAll("a", href=True, text="Download")]
 
     def fetch_all(self, storage_path: Path) -> None:
-        """
-        Download and store on disk all data tables from the Bulk Download Listing
+        """Download and store on disk all data tables from the Bulk Download Listing.
+
         :param storage_path: Directory on disk to which store the data
         """
         dataset_urls = self._crawl_dataset_urls(self.list_url)
